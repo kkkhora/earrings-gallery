@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>货盘 - Product Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .controls input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .controls button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .controls button:hover {
+            background: #45a049;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        .product {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .product:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .product.selected {
+            border: 3px solid #4CAF50;
+        }
+        .product-header {
+            position: relative;
+        }
+        .product input[type="checkbox"] {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .product-info {
+            padding: 15px;
+        }
+        .product-number {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .quantity-selector label {
+            font-size: 13px;
+            color: #666;
+        }
+        .quantity-selector input {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            margin-bottom: 20px;
+        }
+        .modal-header h2 {
+            margin-bottom: 10px;
+        }
+        #listText {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 13px;
+            border: 1px solid #ddd;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .modal-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        #copyBtn {
+            background: #4CAF50;
+            color: white;
+        }
+        #copyBtn:hover {
+            background: #45a049;
+        }
+        #closeBtn {
+            background: #f44336;
+            color: white;
+        }
+        #closeBtn:hover {
+            background: #da190b;
+        }
+        #copySuccess {
+            display: none;
+            color: #4CAF50;
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>货盘 Product Gallery</h1>
+        <p>Total Products: 51</p>
+    </div>
+    
+    <div class="controls">
+        <input type="text" id="searchInput" placeholder="Search by product number">
+        <button onclick="selectAll()">Select All</button>
+        <button onclick="deselectAll()">Deselect All</button>
+        <button onclick="generateList()">Generate List</button>
+    </div>
+    
+    <div class="gallery" id="gallery"></div>
+    
+    <div id="listModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Product List</h2>
+            </div>
+            <div id="listText"></div>
+            <div id="copySuccess">Copied to clipboard!</div>
+            <div class="modal-buttons">
+                <button id="copyBtn" onclick="copyToClipboard()">Copy to Clipboard</button>
+                <button id="closeBtn" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const products = [{"id": 1, "number": "001", "image": "processed_images/Product_001_IMG.jpg"}, {"id": 2, "number": "002", "image": "processed_images/Product_002_IMG.jpg"}, {"id": 3, "number": "003", "image": "processed_images/Product_003_IMG.jpg"}, {"id": 4, "number": "004", "image": "processed_images/Product_004_IMG.jpg"}, {"id": 5, "number": "005", "image": "processed_images/Product_005_IMG.jpg"}, {"id": 6, "number": "006", "image": "processed_images/Product_006_IMG.jpg"}, {"id": 7, "number": "007", "image": "processed_images/Product_007_IMG.jpg"}, {"id": 8, "number": "008", "image": "processed_images/Product_008_IMG.jpg"}, {"id": 9, "number": "009", "image": "processed_images/Product_009_IMG.jpg"}, {"id": 10, "number": "010", "image": "processed_images/Product_010_IMG.jpg"}, {"id": 11, "number": "011", "image": "processed_images/Product_011_IMG.jpg"}, {"id": 12, "number": "012", "image": "processed_images/Product_012_IMG.jpg"}, {"id": 13, "number": "013", "image": "processed_images/Product_013_IMG.jpg"}, {"id": 14, "number": "014", "image": "processed_images/Product_014_IMG.jpg"}, {"id": 15, "number": "015", "image": "processed_images/Product_015_IMG.jpg"}, {"id": 16, "number": "016", "image": "processed_images/Product_016_IMG.jpg"}, {"id": 17, "number": "017", "image": "processed_images/Product_017_IMG.jpg"}, {"id": 18, "number": "018", "image": "processed_images/Product_018_IMG.jpg"}, {"id": 19, "number": "019", "image": "processed_images/Product_019_IMG.jpg"}, {"id": 20, "number": "020", "image": "processed_images/Product_020_IMG.jpg"}, {"id": 21, "number": "021", "image": "processed_images/Product_021_IMG.jpg"}, {"id": 22, "number": "022", "image": "processed_images/Product_022_IMG.jpg"}, {"id": 23, "number": "023", "image": "processed_images/Product_023_IMG.jpg"}, {"id": 24, "number": "024", "image": "processed_images/Product_024_IMG.jpg"}, {"id": 25, "number": "025", "image": "processed_images/Product_025_IMG.jpg"}, {"id": 26, "number": "026", "image": "processed_images/Product_026_IMG.jpg"}, {"id": 27, "number": "027", "image": "processed_images/Product_027_IMG.jpg"}, {"id": 28, "number": "028", "image": "processed_images/Product_028_IMG.jpg"}, {"id": 29, "number": "029", "image": "processed_images/Product_029_IMG.jpg"}, {"id": 30, "number": "030", "image": "processed_images/Product_030_IMG.jpg"}, {"id": 31, "number": "031", "image": "processed_images/Product_031_IMG.jpg"}, {"id": 32, "number": "032", "image": "processed_images/Product_032_IMG.jpg"}, {"id": 33, "number": "033", "image": "processed_images/Product_033_IMG.jpg"}, {"id": 34, "number": "034", "image": "processed_images/Product_034_IMG.jpg"}, {"id": 35, "number": "035", "image": "processed_images/Product_035_IMG.jpg"}, {"id": 36, "number": "036", "image": "processed_images/Product_036_IMG.jpg"}, {"id": 37, "number": "037", "image": "processed_images/Product_037_IMG.jpg"}, {"id": 38, "number": "038", "image": "processed_images/Product_038_IMG.jpg"}, {"id": 39, "number": "039", "image": "processed_images/Product_039_IMG.jpg"}, {"id": 40, "number": "040", "image": "processed_images/Product_040_IMG.jpg"}, {"id": 41, "number": "041", "image": "processed_images/Product_041_IMG.jpg"}, {"id": 42, "number": "042", "image": "processed_images/Product_042_IMG.jpg"}, {"id": 43, "number": "043", "image": "processed_images/Product_043_IMG.jpg"}, {"id": 44, "number": "044", "image": "processed_images/Product_044_IMG.jpg"}, {"id": 45, "number": "045", "image": "processed_images/Product_045_IMG.jpg"}, {"id": 46, "number": "046", "image": "processed_images/Product_046_IMG.jpg"}, {"id": 47, "number": "047", "image": "processed_images/Product_047_IMG.jpg"}, {"id": 48, "number": "048", "image": "processed_images/Product_048_IMG.jpg"}, {"id": 49, "number": "049", "image": "processed_images/Product_049_IMG.jpg"}, {"id": 50, "number": "050", "image": "processed_images/Product_050_IMG.jpg"}, {"id": 51, "number": "051", "image": "processed_images/Product_051_IMG.jpg"}];
+        
+        function renderGallery(productsToRender = products) {
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = '';
+            
+            productsToRender.forEach(product => {
+                const div = document.createElement('div');
+                div.className = 'product';
+                div.innerHTML = `
+                    <div class="product-header">
+                        <input type="checkbox" class="product-checkbox" value="${product.id}">
+                        <img src="${product.image}" alt="Product ${product.number}" class="product-img">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-number">Product ${product.number}</div>
+                        <div class="quantity-selector">
+                            <label>Qty:</label>
+                            <input type="number" class="quantity-input" value="1" min="1" max="999">
+                        </div>
+                    </div>
+                `;
+                
+                const checkbox = div.querySelector('input[type="checkbox"]');
+                checkbox.addEventListener('change', () => {
+                    if (checkbox.checked) {
+                        div.classList.add('selected');
+                    } else {
+                        div.classList.remove('selected');
+                    }
+                });
+                
+                gallery.appendChild(div);
+            });
+        }
+        
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            if (query === '') {
+                renderGallery(products);
+            } else {
+                const filtered = products.filter(p => p.number.includes(query));
+                renderGallery(filtered);
+            }
+        });
+        
+        function selectAll() {
+            document.querySelectorAll('.product-checkbox').forEach(cb => {
+                cb.checked = true;
+                cb.closest('.product').classList.add('selected');
+            });
+        }
+        
+        function deselectAll() {
+            document.querySelectorAll('.product-checkbox').forEach(cb => {
+                cb.checked = false;
+                cb.closest('.product').classList.remove('selected');
+            });
+        }
+        
+        function generateList() {
+            const selected = document.querySelectorAll('.product-checkbox:checked');
+            if (selected.length === 0) {
+                alert('Please select at least one product');
+                return;
+            }
+            
+            const items = Array.from(selected).map(cb => {
+                const product = products.find(p => p.id == cb.value);
+                const qty = cb.closest('.product').querySelector('.quantity-input').value;
+                return `Product ${product.number} x ${qty}`;
+            });
+            
+            const timestamp = new Date().toLocaleString();
+            const listContent = `Generated on: ${timestamp}
+Selected Products (${items.length}):
+
+${items.join('\n')}`;
+            
+            document.getElementById('listText').textContent = listContent;
+            document.getElementById('copySuccess').style.display = 'none';
+            document.getElementById('listModal').classList.add('show');
+        }
+        
+        function closeModal() {
+            document.getElementById('listModal').classList.remove('show');
+        }
+        
+        function copyToClipboard() {
+            const text = document.getElementById('listText').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const successMsg = document.getElementById('copySuccess');
+                successMsg.style.display = 'block';
+                setTimeout(() => {
+                    successMsg.style.display = 'none';
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy: ' + err);
+            });
+        }
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('listModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+        
+        renderGallery();
+    </script>
+</body>
+</html>
