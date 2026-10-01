@@ -30,6 +30,8 @@
         .quantity-input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; margin-bottom: 10px; }
         .copy-btn { background: #2196F3; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; width: 100%; transition: background 0.2s; }
         .copy-btn:hover { background: #0b7dda; }
+        .close-modal-btn { background: #999; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; flex: 1; transition: background 0.2s; }
+        .close-modal-btn:hover { background: #777; }
         .generate-summary-btn { background: #FF9800; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; width: 100%; transition: background 0.2s; }
         .generate-summary-btn:hover { background: #F57C00; }
         .summary { background: white; padding: 20px; border-radius: 8px; margin-top: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -63,7 +65,10 @@
             <span class="summary-close-btn" onclick="closeSummaryModal()">&times;</span>
             <h3>Order Summary</h3>
             <div class="summary-content" id="summaryContent"></div>
-            <button onclick="copySummary()" class="copy-btn">Copy Summary</button>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="copySummary()" class="copy-btn">Copy Summary</button>
+                <button onclick="closeSummaryModal()" class="close-modal-btn">Close</button>
+            </div>
         </div>
     </div>
     <div id="imageModal">
@@ -91,7 +96,7 @@
                         <div class="product-options">
                             <label>
                                 <input type="checkbox" class="resistance-clip" data-product-id="${product.id}" onchange="updateSelection()">
-                                Add Resistance Ear Clip
+                                Change to Resistance Ear Clip
                             </label>
                         </div>
                         
@@ -119,7 +124,7 @@
             const sizeInput = productDiv.querySelector('.size-input').value || 'Not specified';
             const quantityInput = productDiv.querySelector('.quantity-input').value;
             const resistanceClip = productDiv.querySelector('.resistance-clip').checked ? 'Yes' : 'No';
-            const info = `Product #${product.number}\nQuantity: ${quantityInput}\nAdd Resistance Ear Clip: ${resistanceClip}`;
+            const info = `Product #${product.number}\nQuantity: ${quantityInput}\nChange to Resistance Ear Clip: ${resistanceClip}`;
             navigator.clipboard.writeText(info).then(() => { alert('Product added to clipboard!'); });
         }
         function generateSummaryForAll() {
@@ -132,7 +137,7 @@
                 
                 const quantityInput = productInfo.querySelector('.quantity-input').value;
                 const resistanceClip = productInfo.querySelector('.resistance-clip').checked ? 'Yes' : 'No';
-                checkedProducts.push(`Product #${product.number}\nQuantity: ${quantityInput}\nAdd Resistance Ear Clip: ${resistanceClip}`);
+                checkedProducts.push(`Product #${product.number}\nQuantity: ${quantityInput}\nChange to Resistance Ear Clip: ${resistanceClip}`);
             });
             if (checkedProducts.length === 0) { alert('Please select at least one product'); return; }
             const summary = checkedProducts.join('\n\n---\n\n');
