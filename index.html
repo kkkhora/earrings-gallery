@@ -107,7 +107,7 @@
             const sizeInput = productDiv.querySelector('.size-input').value || 'Not specified';
             const quantityInput = productDiv.querySelector('.quantity-input').value;
             const resistanceClip = productDiv.querySelector('.resistance-clip').checked ? 'Yes' : 'No';
-            const info = `Product #${product.number}\nSize: ${sizeInput}\nQuantity: ${quantityInput}\nResistance Ear Clip: ${resistanceClip}`;
+            const info = `Product #${product.number}\nQuantity: ${quantityInput}\nResistance Ear Clip: ${resistanceClip}`;
             navigator.clipboard.writeText(info).then(() => { alert('Product added to clipboard!'); });
         }
         function generateSummary() {
@@ -117,10 +117,10 @@
                 const productId = checkbox.dataset.productId;
                 const product = products.find(p => p.id == productId);
                 const productInfo = productDiv.querySelector('.product-info');
-                const sizeInput = productInfo.querySelector('.size-input').value || 'Not specified';
+                
                 const quantityInput = productInfo.querySelector('.quantity-input').value;
                 const resistanceClip = productInfo.querySelector('.resistance-clip').checked ? 'Yes' : 'No';
-                checkedProducts.push(`Product #${product.number}\nSize: ${sizeInput}\nQuantity: ${quantityInput}\nResistance Ear Clip: ${resistanceClip}`);
+                checkedProducts.push(`Product #${product.number}\nQuantity: ${quantityInput}\nResistance Ear Clip: ${resistanceClip}`);
             });
             if (checkedProducts.length === 0) { alert('Please select at least one product'); return; }
             const summary = checkedProducts.join('\n\n---\n\n');
