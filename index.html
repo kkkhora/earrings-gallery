@@ -30,6 +30,8 @@
         .quantity-input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; margin-bottom: 10px; }
         .copy-btn { background: #2196F3; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; width: 100%; transition: background 0.2s; }
         .copy-btn:hover { background: #0b7dda; }
+        .generate-summary-btn { background: #FF9800; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; width: 100%; transition: background 0.2s; }
+        .generate-summary-btn:hover { background: #F57C00; }
         .summary { background: white; padding: 20px; border-radius: 8px; margin-top: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .summary h3 { margin-bottom: 10px; color: #333; }
         .summary-content { background: #f9f9f9; padding: 15px; border-radius: 4px; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-break: break-word; max-height: 400px; overflow-y: auto; }
@@ -48,7 +50,7 @@
         <input type="text" id="searchInput" placeholder="Search by product number">
         <button onclick="filterProducts()">Search</button>
         <button onclick="clearSearch()">Clear</button>
-        <button onclick="generateSummary()">Generate Summary</button>
+        
     </div>
     <div class="gallery" id="gallery"></div>
     <div class="summary" id="summary" style="display: none;">
@@ -85,7 +87,7 @@
                         </div>
                         
                         <input type="number" class="quantity-input" min="1" value="1" placeholder="Quantity">
-                        
+                        <button class="generate-summary-btn" onclick="generateSummaryForAll()">Generate Summary</button>
                     </div>
                 `;
                 gallery.appendChild(div);
@@ -110,7 +112,7 @@
             const info = `Product #${product.number}\nQuantity: ${quantityInput}\nResistance Ear Clip: ${resistanceClip}`;
             navigator.clipboard.writeText(info).then(() => { alert('Product added to clipboard!'); });
         }
-        function generateSummary() {
+        function generateSummaryForAll() {
             const checkedProducts = [];
             document.querySelectorAll('.product-checkbox:checked').forEach(checkbox => {
                 const productDiv = checkbox.closest('.product');
@@ -125,7 +127,8 @@
             if (checkedProducts.length === 0) { alert('Please select at least one product'); return; }
             const summary = checkedProducts.join('\n\n---\n\n');
             document.getElementById('summaryContent').textContent = summary;
-            document.getElementById('summary').style.display = 'block';
+            document.getElementById('summary').style.display = 'block'; document.getElementById('summary').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('summary').scrollIntoView({ behavior: 'smooth' });
         }
         function copySummary() { const summaryText = document.getElementById('summaryContent').textContent; navigator.clipboard.writeText(summaryText).then(() => { alert('Summary copied to clipboard!'); }); }
         renderGallery();
