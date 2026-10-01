@@ -36,6 +36,11 @@
         .summary h3 { margin-bottom: 10px; color: #333; }
         .summary-content { background: #f9f9f9; padding: 15px; border-radius: 4px; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-break: break-word; max-height: 400px; overflow-y: auto; }
         #imageModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.9); }
+        #summaryModal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
+        .summary-modal-content { background-color: white; margin: 10% auto; padding: 20px; border-radius: 8px; width: 90%; max-width: 600px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .summary-close-btn { position: absolute; right: 20px; top: 15px; color: #666; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .summary-close-btn:hover { color: #000; }
+        .summary-modal-content h3 { margin-bottom: 15px; color: #333; }
         .modal-content { margin: auto; display: block; max-width: 90%; max-height: 90%; margin-top: 5%; object-fit: contain; }
         .close-btn { position: absolute; top: 20px; right: 40px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; z-index: 1001; }
         .close-btn:hover { color: #bbb; }
@@ -53,10 +58,13 @@
         
     </div>
     <div class="gallery" id="gallery"></div>
-    <div class="summary" id="summary" style="display: none;">
-        <h3>Order Summary</h3>
-        <button onclick="copySummary()" class="copy-btn" style="margin-bottom: 10px;">Copy Summary</button>
-        <div class="summary-content" id="summaryContent"></div>
+    <div id="summaryModal" class="summary-modal">
+        <div class="summary-modal-content">
+            <span class="summary-close-btn" onclick="closeSummaryModal()">&times;</span>
+            <h3>Order Summary</h3>
+            <div class="summary-content" id="summaryContent"></div>
+            <button onclick="copySummary()" class="copy-btn">Copy Summary</button>
+        </div>
     </div>
     <div id="imageModal">
         <span class="close-btn" onclick="closeImageModal()">&times;</span>
@@ -97,7 +105,8 @@
         function openImageModal(src) { document.getElementById('imageModal').style.display = 'block'; document.getElementById('modalImage').src = src; }
         function closeImageModal() { document.getElementById('imageModal').style.display = 'none'; }
         document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeImageModal(); });
-        document.getElementById('imageModal').addEventListener('click', function(e) { if (e.target.id === 'imageModal') closeImageModal(); });
+        document.getElementById('imageModal').addEventListener('click', function(e) { if (e.target.id === 'imageModal') closeImageModal();
+                document.getElementById('summaryModal').addEventListener('click', function(e) { if (e.target.id === 'summaryModal') closeSummaryModal(); }); });
         function updateSelection() {
             document.querySelectorAll('.product-checkbox:checked').forEach(checkbox => { checkbox.closest('.product').classList.add('selected'); });
             document.querySelectorAll('.product-checkbox:not(:checked)').forEach(checkbox => { checkbox.closest('.product').classList.remove('selected'); });
@@ -128,10 +137,10 @@
             if (checkedProducts.length === 0) { alert('Please select at least one product'); return; }
             const summary = checkedProducts.join('\n\n---\n\n');
             document.getElementById('summaryContent').textContent = summary;
-            document.getElementById('summary').style.display = 'block'; document.getElementById('summary').scrollIntoView({ behavior: 'smooth' });
-            document.getElementById('summary').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('summaryModal').style.display = 'block';
         }
-        function copySummary() { const summaryText = document.getElementById('summaryContent').textContent; navigator.clipboard.writeText(summaryText).then(() => { alert('Summary copied to clipboard!'); }); }
+                function closeSummaryModal() { document.getElementById('summaryModal').style.display = 'none'; }
+        function copySummary() { const summaryText = document.getElementById('summaryContent').textContent; navigator.clipboard.writeText(summaryText).then(() => { alert('Summary copied to clipboard!'); }).catch(() => { alert('Failed to copy'); }); }
         renderGallery();
     </script>
 </body>
