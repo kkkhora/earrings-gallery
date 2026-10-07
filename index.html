@@ -234,7 +234,7 @@
         document.getElementById('imageModal').addEventListener('click', function(e) { if (e.target.id === 'imageModal') closeImageModal();
                 document.getElementById('summaryModal').addEventListener('click', function(e) { if (e.target.id === 'summaryModal') closeSummaryModal(); }); });
         function deselectAll() {
-            document.querySelectorAll('.product-checkbox:checked').forEach(cb => { cb.checked = false; });
+            document.querySelectorAll('.product-checkbox:checked, .resistance-clip:checked').forEach(cb => { cb.checked = false; });
             updateSelection();
         }
         function updateSelection() {
