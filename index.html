@@ -49,10 +49,17 @@
         .section-container { background: white; padding: 30px 20px; margin: 30px 0; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .section-container h2 { color: #333; margin-bottom: 15px; font-size: 24px; border-bottom: 3px solid #4CAF50; padding-bottom: 10px; }
         .section-instructions { background: #f9f9f9; padding: 15px; border-radius: 4px; margin-bottom: 20px; line-height: 1.6; color: #555; font-size: 14px; }
-        .image-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
+        .image-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 12px; align-items: start; }
+        .image-gallery.wide { grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); }
+        .sub-heading { color: #333; font-size: 18px; margin: 28px 0 0; }
+        .top-menu { position: sticky; top: 0; z-index: 50; background: white; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; gap: 10px; flex-wrap: wrap; }
+        .top-menu a { text-decoration: none; color: #333; background: #f1f1f1; padding: 10px 16px; border-radius: 20px; font-size: 14px; font-weight: bold; transition: background 0.2s, color 0.2s; }
+        .top-menu a:hover { background: #4CAF50; color: white; }
+        html { scroll-behavior: smooth; }
+        #products, #create-your-own, #pet-necklace { scroll-margin-top: 80px; }
+        @media (max-width: 500px) { .image-gallery.wide { grid-template-columns: 1fr; } .top-menu a { font-size: 13px; padding: 8px 12px; } }
         .gallery-image { position: relative; overflow: hidden; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); background: #f0f0f0; }
-        .gallery-image img { width: 100%; height: 250px; object-fit: cover; cursor: pointer; transition: transform 0.3s; }
-        .gallery-image:hover img { transform: scale(1.05); }
+        .gallery-image img { display: block; width: 100%; height: auto; cursor: zoom-in; padding-bottom: 34px; background: white; }
         .image-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); color: white; padding: 8px; font-size: 12px; text-align: center; }
         .image-label.example { background: rgba(76, 175, 80, 0.9); }
     </style>
@@ -62,7 +69,12 @@
         <h1>Accessories Gallery</h1>
         <p>925 Silver or 18K Gold Plated Ear Posts</p>
     </div>
-    <div class="controls">
+    <nav class="top-menu">
+        <a href="#products">All Products</a>
+        <a href="#create-your-own">Create Your Own Jewelry</a>
+        <a href="#pet-necklace">Customize Your Pet Necklace</a>
+    </nav>
+    <div class="controls" id="products">
         <input type="text" id="searchInput" placeholder="Search by product number">
         <button onclick="filterProducts()">Search</button>
         <button onclick="clearSearch()">Clear</button>
@@ -81,60 +93,74 @@
         </div>
     </div>
 
-    <!-- Customize Your Own Jewelry Section -->
-    <div class="section-container">
+    <!-- Create Your Own Jewelry Section -->
+    <div class="section-container" id="create-your-own">
         <h2>Create Your Own Jewelry</h2>
         <div class="section-instructions">
-            <p><strong>Step 1:</strong> Choose from our material library - Browse our collection of accessories and patterns to select the pieces you love.</p>
-            <p><strong>Step 2:</strong> Design your piece - Tell us which materials and patterns you'd like to combine.</p>
-            <p><strong>Step 3:</strong> Get a preview - We'll create a custom design preview for you.</p>
-            <p><strong>Step 4:</strong> Choose your earring style - Select from ear posts, ear clips, or other styles that suit your preference.</p>
+            <p><strong>Step 1:</strong> Choose your patterns - Browse our pattern libraries below and pick the designs you love.</p>
+            <p><strong>Step 2:</strong> Choose your accessories - Select charms, stones and findings from our accessories libraries.</p>
+            <p><strong>Step 3:</strong> Get a preview - Tell us your picks and we'll design your piece and send you a preview.</p>
+            <p><strong>Step 4:</strong> Choose your earring style - Select ear posts, hoops, or Japanese resistance ear clips.</p>
             <p><strong>Step 5:</strong> Place your order - Once you're happy with your design, complete your purchase!</p>
-            <p style="margin-top: 15px; color: #666; font-style: italic;">Our design team is ready to work with you to create something truly unique. Browse our material libraries and pattern collections below to get inspired!</p>
+            <p style="margin-top: 15px; color: #666; font-style: italic;">Necklaces can be customized too - pick your favourites and we'll arrange the design for you. Tap any image to enlarge.</p>
         </div>
+
+        <h3 class="sub-heading">Step 1 &middot; Pattern Library</h3>
+        <div class="image-gallery wide">
+                <div class="gallery-image">
+                    <img src="customization-images/pattern-library-1.jpg" alt="Pattern Library 1" onclick="openImageModal(this.src)">
+                    <div class="image-label">Pattern Library 1</div>
+                </div>
+                <div class="gallery-image">
+                    <img src="customization-images/pattern-library-2.jpg" alt="Pattern Library 2" onclick="openImageModal(this.src)">
+                    <div class="image-label">Pattern Library 2</div>
+                </div>
+                <div class="gallery-image">
+                    <img src="customization-images/pattern-library-3.jpg" alt="Pattern Library 3" onclick="openImageModal(this.src)">
+                    <div class="image-label">Pattern Library 3</div>
+                </div>
+        </div>
+
+        <h3 class="sub-heading">Step 2 &middot; Accessories Library</h3>
         <div class="image-gallery">
-            <div class="gallery-image">
-                <img src="customization-images/01-diy-necklace.jpg" alt="DIY Necklace Example" onclick="openImageModal(this.src)">
-                <div class="image-label">DIY Necklace Options</div>
-            </div>
-            <div class="gallery-image">
-                <img src="customization-images/02-diy-earring.jpg" alt="DIY Earring Example" onclick="openImageModal(this.src)">
-                <div class="image-label">DIY Earring Options</div>
-            </div>
-            <div class="gallery-image">
-                <img src="customization-images/03-step4-materials.jpg" alt="Earring & Clip Styles" onclick="openImageModal(this.src)">
-                <div class="image-label">Earring & Clip Styles</div>
-            </div>
-            <div class="gallery-image">
-                <img src="customization-images/04-accessories-lib2.jpg" alt="Accessories Library" onclick="openImageModal(this.src)">
-                <div class="image-label">Accessories Library</div>
-            </div>
-            <div class="gallery-image">
-                <img src="customization-images/05-pattern-lib2.jpg" alt="Pattern Library 2" onclick="openImageModal(this.src)">
-                <div class="image-label">Pattern Library</div>
-            </div>
-            <div class="gallery-image">
-                <img src="customization-images/06-pattern-lib1.jpg" alt="Pattern Library 1" onclick="openImageModal(this.src)">
-                <div class="image-label">Design Inspiration</div>
-            </div>
-            <div class="gallery-image">
-                <img src="customization-images/07-accessories-lib1.jpg" alt="Accessories Library Example" onclick="openImageModal(this.src)">
-                <div class="image-label">More Accessories</div>
-            </div>
-            <div class="gallery-image">
-                <img src="customization-images/08-pattern-lib3.jpg" alt="Pattern Library 3" onclick="openImageModal(this.src)">
-                <div class="image-label example">Example Design</div>
-            </div>
+                <div class="gallery-image">
+                    <img src="customization-images/accessories-library-1.jpg" alt="Accessories Library 1" onclick="openImageModal(this.src)">
+                    <div class="image-label">Accessories Library 1</div>
+                </div>
+                <div class="gallery-image">
+                    <img src="customization-images/accessories-library-2.jpg" alt="Accessories Library 2" onclick="openImageModal(this.src)">
+                    <div class="image-label">Accessories Library 2</div>
+                </div>
+        </div>
+
+        <h3 class="sub-heading">Step 4 &middot; Earring &amp; Clip Styles</h3>
+        <div class="image-gallery">
+                <div class="gallery-image">
+                    <img src="customization-images/earring-clip-styles.jpg" alt="Earring and Clip Styles" onclick="openImageModal(this.src)">
+                    <div class="image-label">Ear Posts / Hoops &amp; Resistance Ear Clips</div>
+                </div>
+        </div>
+
+        <h3 class="sub-heading">Design Examples</h3>
+        <div class="image-gallery">
+                <div class="gallery-image">
+                    <img src="customization-images/diy-earring-example.jpg" alt="DIY Earring Example" onclick="openImageModal(this.src)">
+                    <div class="image-label example">DIY Earring Example</div>
+                </div>
+                <div class="gallery-image">
+                    <img src="customization-images/diy-necklace-example.jpg" alt="DIY Necklace Example" onclick="openImageModal(this.src)">
+                    <div class="image-label example">DIY Necklace Example</div>
+                </div>
         </div>
     </div>
 
     <!-- Customize Your Pet Necklace Section -->
-    <div class="section-container">
+    <div class="section-container" id="pet-necklace">
         <h2>Customize Your Pet Necklace</h2>
         <div class="section-instructions">
             <p><strong>Create a personalized necklace featuring your beloved pet!</strong></p>
             <p>To order a custom pet necklace, please send us a clear, close-up photo of your pet's face. The clearer the photo, the more detailed and accurate we can make your necklace charm.</p>
-            <p style="margin-top: 15px; color: #e67e22; font-weight: bold;">📸 Photo Requirements:</p>
+            <p style="margin-top: 15px; color: #e67e22; font-weight: bold;">Photo Requirements:</p>
             <ul style="margin-left: 20px; color: #555;">
                 <li>Clear, close-up photo of your pet's face</li>
                 <li>Good lighting (natural light is best)</li>
@@ -144,14 +170,14 @@
             <p style="margin-top: 15px; color: #666; font-style: italic;">Once you share your pet's photo, our team will create a beautiful custom necklace charm. Contact us with your photo to get started!</p>
         </div>
         <div class="image-gallery">
-            <div class="gallery-image">
-                <img src="customization-images/09-pet-necklace-example1.jpg" alt="Pet Necklace Example 1" onclick="openImageModal(this.src)">
-                <div class="image-label example">Pet Necklace Example</div>
-            </div>
-            <div class="gallery-image">
-                <img src="customization-images/10-pet-necklace-example2.jpg" alt="Pet Necklace Example 2" onclick="openImageModal(this.src)">
-                <div class="image-label example">Pet Necklace Example</div>
-            </div>
+                <div class="gallery-image">
+                    <img src="customization-images/pet-necklace-example-1.jpg" alt="Pet Necklace Example 1" onclick="openImageModal(this.src)">
+                    <div class="image-label example">Pet Necklace Example</div>
+                </div>
+                <div class="gallery-image">
+                    <img src="customization-images/pet-necklace-example-2.jpg" alt="Pet Necklace Example 2" onclick="openImageModal(this.src)">
+                    <div class="image-label example">Pet Necklace Worn</div>
+                </div>
         </div>
     </div>
 
